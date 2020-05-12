@@ -28,6 +28,26 @@ export class SceneControl {
         scene.add(this.ground);
         this.worldSize = 15;
 
+        //create surroundings (space)
+
+        let planetGeo = new T.SphereBufferGeometry(100, 32, 32);
+        let pmap = new T.TextureLoader().load("./Pictures/mars.png");
+        let planetMat = new T.MeshStandardMaterial( {map: pmap});
+        this.planet = new T.Mesh(planetGeo, planetMat);
+        this.planet.position.z = -700;
+        this.planet.position.y = -100;
+        this.planet.position.x = 30;
+        scene.add(this.planet);
+
+        let moonGeo = new T.SphereBufferGeometry(20, 32, 32);
+        let moonMat = new T.MeshStandardMaterial( {color: "white"});
+        this.moon = new T.Mesh(moonGeo, moonMat);
+        this.moon.position.z = -700;
+        this.moon.position.y = -100;
+        this.moon.position.x = 170;
+        scene.add(this.moon);
+
+
         // build objects
         this.objects = [];
         this.frames = [];
@@ -83,6 +103,12 @@ export class SceneControl {
         this.def2.position.y = .5;
         this.scene.add(this.def2);
 
+        this.def3 = new T.Mesh(defGeo, defMat); // another following defender
+        this.def3.position.x = 15;
+        this.def3.position.z = 15;
+        this.def3.position.y = .5;
+        this.scene.add(this.def3);
+
         
         this.def1Right = true;
         
@@ -92,6 +118,7 @@ export class SceneControl {
     // returns true if all obejcts have been collected, else returns false.
     // returns 0 if game is continued, 1 if game is lost, 2 if game is won.
     update(cube) {
+        this.updateSurroundings();
         for (let i = 0; i < this.objects.length; i++) {
             if ((Math.abs(cube.position.x - this.objects[i].position.x) < 0.3) &&
                 (Math.abs(cube.position.z - this.objects[i].position.z) < 0.3)) {
@@ -139,12 +166,34 @@ export class SceneControl {
         let step = 0.05;
         this.def2.position.x += step*x;
         this.def2.position.z += step*z;
+
+        // move second follower
+
+        x = (cube.position.x - this.def3.position.x);
+        z = (cube.position.z - this.def3.position.z);
+        dist = Math.sqrt(Math.pow(x,2) + Math.pow(z,2));
+        x = x / dist;
+        z = z / dist;
+        //let step = 0.05;
+        this.def3.position.x += step*x;
+        this.def3.position.z += step*z;
         
 
 
         if (this.objects.length == 0) { return 2; }
         else { return 0; }
 
+
+    }
+
+    updateSurroundings() {
+        let x = this.moon.position.x;
+        let y = this.moon.position.y;
+        let z = this.moon.position.z;
+
+        this.moon.translateX(-140);
+        this.moon.rotateOnWorldAxis(new T.Vector3(0,1,0), .007);
+        this.moon.translateX(140);
 
     }
 }

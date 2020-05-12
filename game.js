@@ -70,8 +70,8 @@ function play(scene, camera, renderer, control) {
     // camera.position.y = 12;
     // camera.position.x = 0;
 
-    camera.position.z = 20;
-    camera.position.y = 10;
+    camera.position.z = 30;
+    camera.position.y = 12;
     camera.position.x = 0;
 
     camera.lookAt(cube.position.x, cube.position.y, cube.position.z);
