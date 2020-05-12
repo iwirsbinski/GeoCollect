@@ -1,4 +1,5 @@
 let T = THREE;
+let frame = 0;
 
 export class SceneControl {
 
@@ -16,31 +17,51 @@ export class SceneControl {
         // }
         //split objects into 4 quadrants
 
+        // build ground
+        let groundGeo = new T.PlaneBufferGeometry(30,30);
+        let groundMat = new T.MeshStandardMaterial( {color: "silver"});
+        //groundMat.metalness = 1.0;
+        //groundMat.roughness = 0.0;
+        this.ground = new T.Mesh(groundGeo, groundMat);
+        this.ground.receiveShadow = true;
+        this.ground.rotateX(2*Math.PI - Math.PI / 2);
+        scene.add(this.ground);
+        this.worldSize = 15;
+
         // build objects
         this.objects = [];
+        this.frames = [];
         let mesh1 = new T.Mesh(geo, mat);
         mesh1.position.x = 8;
-        mesh1.position.y = .5;
+        mesh1.position.y = 1;
         mesh1.position.z = 5;
+        mesh1.castShadow = true;
         this.objects.push(mesh1);
+        this.frames.push(1);
 
         let mesh2 = new T.Mesh(geo, mat);
         mesh2.position.x = -5;
-        mesh2.position.y = .5;
+        mesh2.position.y = 1;
         mesh2.position.z = 8;
+        mesh2.castShadow = true;
         this.objects.push(mesh2);
+        this.frames.push(0);
 
         let mesh3 = new T.Mesh(geo, mat);
         mesh3.position.x = -8;
-        mesh3.position.y = .5;
+        mesh3.position.y = 1;
         mesh3.position.z = -8;
+        mesh3.castShadow = true;
         this.objects.push(mesh3);
+        this.frames.push(2);
 
         let mesh4 = new T.Mesh(geo, mat);
         mesh4.position.x = 5;
-        mesh4.position.y = .5;
+        mesh4.position.y = 1;
         mesh4.position.z = -5;
+        mesh4.castShadow = true;
         this.objects.push(mesh4);
+        this.frames.push(3);
 
         //build defenders
         let defGeo = new T.ConeBufferGeometry(1,1,50);
@@ -77,6 +98,12 @@ export class SceneControl {
                     this.scene.remove(this.objects[i]);
                     this.objects.splice(i,1);
             }
+        }
+
+        // animate objects to "float"
+        for (let i = 0; i < this.objects.length; i++) {
+            this.objects[i].position.y = .1 * (Math.cos(this.frames[i]) + 10);
+            this.frames[i] += .1;
         }
         if (this.def1Right == true) {
             this.def1.position.x -= 0.1;
