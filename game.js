@@ -151,7 +151,7 @@ function play(scene, camera, renderer, control) {
         }
 
 
-        let state = control.update(cube, shoot, up, down, left, right);
+        let state = control.update(cube, shoot, recentMove);
         renderer.render( scene, camera );
         // game is lost
         if (state == 1) {

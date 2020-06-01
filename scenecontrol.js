@@ -138,7 +138,7 @@ export class SceneControl {
     // updates the game with respect to the objects.
     // returns true if all obejcts have been collected, else returns false.
     // returns 0 if game is continued, 1 if game is lost, 2 if game is won.
-    update(cube, shoot, up, down, left, right) {
+    update(cube, shoot, recentMove) {
         this.updateSurroundings();
         for (let i = 0; i < this.objects.length; i++) {
             if ((Math.abs(cube.position.x - this.objects[i].position.x) < 0.3) &&
@@ -209,11 +209,12 @@ export class SceneControl {
         // animate the shooting feature
         if (shoot && !this.shooting) {
             this.shooting = true;
-            if (up) { this.shootDirect = "up"; }
-            if (down) { this.shootDirect = "down"; }
-            if (left) { this.shootDirect = "left"; }
-            if (right) {this.shootdirect = "right"; }
-            else { this.shootDirect = "right"; }
+            // if (up) { this.shootDirect = "up"; }
+            // if (down) { this.shootDirect = "down"; }
+            // if (left) { this.shootDirect = "left"; }
+            // if (right) {this.shootdirect = "right"; }
+            // else { this.shootDirect = "right"; }
+            this.shootDirect = recentMove;
             let bulletGeo = new T.SphereBufferGeometry(.3, 32, 32);
             let bulletMesh = new T.MeshStandardMaterial({color: "black"});
             this.bullet = new T.Mesh(bulletGeo, bulletMesh);
@@ -227,10 +228,10 @@ export class SceneControl {
         }
 
         if (this.shooting) {
-            if (this.shootDirect.localeCompare("up")) { this.bullet.position.z -= 1;}
-            if (this.shootDirect.localeCompare("down")) { this.bullet.position.z += 1; }
-            if (this.shootDirect.localeCompare("left")) { this.bullet.position.x -= 1; }
-            if (this.shootDirect.localeCompare("right")) { this.bullet.position.x += 1; }
+            if (this.shootDirect.localeCompare("up")) { this.bullet.position.z += 1;}
+            if (this.shootDirect.localeCompare("down")) { this.bullet.position.z -= 1; }
+            if (this.shootDirect.localeCompare("left")) { this.bullet.position.x += 1; }
+            if (this.shootDirect.localeCompare("right")) { this.bullet.position.x -= 1; }
             if (Math.abs(this.bullet.position.x) > this.worldSize || Math.abs(this.bullet.position.z) > this.worldSize) {
                 this.shooting = false;
                 this.scene.remove(this.bullet);
