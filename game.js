@@ -32,6 +32,9 @@ function play(scene, camera, renderer, control) {
     let left = false;
     let right = false;
     let down = false;
+    let shoot = false;
+
+    let recentMove = "";
     //  let renderer = new T.WebGLRenderer();
     // renderer.setSize( 700,700 ); // was (window.innerWidth, window.innerHeight );
     // document.getElementById("three2").appendChild( renderer.domElement );
@@ -85,14 +88,17 @@ function play(scene, camera, renderer, control) {
         let code = event.which;
 
         // W "up" or "foreward"
-        if (code == 87) { up = true; }
+        if (code == 87) { up = true; recentMove = "up"; }
         // A, "left"
-        if (code == 65) { left = true; }
+        if (code == 65) { left = true; recentMove = "left";}
         // D, "right"
-        if (code == 68) { right = true; }
+        if (code == 68) { right = true; recentMove = "right";}
 
         // D, "down" or "back"
-        if (code == 83) { down = true; }
+        if (code == 83) { down = true; recentMove = "down";}
+
+        // spacebar, player shoots
+        if (code == 32) { shoot = true; }
 
     }
 
@@ -117,7 +123,9 @@ function play(scene, camera, renderer, control) {
         if (code == 83) {
             down = false;
         }
-    }
+        
+        if (code == 32) { shoot = false; }
+        }
 
     function animate() {
         if (gameLoop) { requestAnimationFrame( animate ); }
@@ -142,7 +150,8 @@ function play(scene, camera, renderer, control) {
             camera.position.x += step;
         }
 
-        let state = control.update(cube);
+
+        let state = control.update(cube, shoot, up, down, left, right);
         renderer.render( scene, camera );
         // game is lost
         if (state == 1) {
