@@ -1,11 +1,23 @@
 let T = THREE;
-let frame = 0;
+let frame = 1;
 
 export class SceneControl {
 
     // construct the objects of the scene.
     constructor(scene) {
         this.scene = scene;
+        this.frame = 1;
+        // TODO: why isnt this working
+        this.scene.background = new T.CubeTextureLoader()
+        .load( [
+            './Pictures/stars2.png',
+            './Pictures/stars2.png',
+            './Pictures/stars2.png',
+            //'ground_plane.png',
+            './Pictures/stars2.png',
+            './Pictures/stars2.png',
+            './Pictures/stars2.png'
+        ] );
 
         let geo = new T.SphereBufferGeometry(.5, 30, 30);
         let mat = new T.MeshStandardMaterial({color: "blue"});
@@ -18,7 +30,7 @@ export class SceneControl {
         //split objects into 4 quadrants
 
         // build ground
-        let groundGeo = new T.PlaneBufferGeometry(30,30);
+        let groundGeo = new T.PlaneBufferGeometry(40,40);
         let groundMat = new T.MeshStandardMaterial( {color: "silver"});
         //groundMat.metalness = 1.0;
         //groundMat.roughness = 0.0;
@@ -26,7 +38,7 @@ export class SceneControl {
         this.ground.receiveShadow = true;
         this.ground.rotateX(2*Math.PI - Math.PI / 2);
         scene.add(this.ground);
-        this.worldSize = 15;
+        this.worldSize = 20; // TODO make arena larger
 
         //create surroundings (space)
 
@@ -47,6 +59,12 @@ export class SceneControl {
         this.moon.position.x = 170;
         scene.add(this.moon);
 
+        let spotLight = new T.SpotLight( 0xffffff);
+        spotLight.position.set( 300, 100, 700 ); // to put back at original, take off negatives
+        spotLight.castShadow = true;
+        spotLight.target = this.planet;
+        spotLight.angle = Math.PI / 2;
+        scene.add(spotLight);
 
         // build objects
         this.objects = [];
@@ -178,10 +196,17 @@ export class SceneControl {
         this.def3.position.x += step*x;
         this.def3.position.z += step*z;
         
-
+        if (this.frame % 100 == 0){
+            // add a new object every 100 frames
+            let geo = new T.SphereBufferGeometry(.5, 30, 30);
+            let mat = new T.MeshStandardMaterial({color: "blue"});
+        }
+        this.frame++;
 
         if (this.objects.length == 0) { return 2; }
         else { return 0; }
+
+
 
 
     }
