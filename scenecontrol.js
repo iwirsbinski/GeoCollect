@@ -145,6 +145,7 @@ export class SceneControl {
                 (Math.abs(cube.position.z - this.objects[i].position.z) < 0.3)) {
                     this.scene.remove(this.objects[i]);
                     this.objects.splice(i,1);
+                    this.frames.splice(i, 1);
             }
         }
 
@@ -199,10 +200,23 @@ export class SceneControl {
         this.def3.position.x += step*x;
         this.def3.position.z += step*z;
         
-        if (this.frame % 100 == 0){
+        // add a new object
+        if (this.frame % 300 == 0){
             // add a new object every 100 frames
             let geo = new T.SphereBufferGeometry(.5, 30, 30);
             let mat = new T.MeshStandardMaterial({color: "blue"});
+            // random coordinates for the object
+            let x = Math.floor(Math.random() * 2*this.worldSize) - this.worldSize;
+            let z = Math.floor(Math.random() * 2*this.worldSize) - this.worldSize;
+            let obj = new T.Mesh(geo, mat);
+            obj.position.x = x;
+            obj.position.y = 1;
+            obj.position.z = z;
+            obj.castShadow = true;
+            this.objects.push(obj);
+            this.frames.push(1);
+            this.scene.add(obj);
+
         }
         this.frame++;
 
