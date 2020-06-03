@@ -1,3 +1,5 @@
+import { defender } from "./defender.js";
+
 let T = THREE;
 let frame = 1;
 
@@ -7,7 +9,6 @@ export class SceneControl {
     constructor(scene) {
         this.scene = scene;
         this.frame = 1;
-        // TODO: why isnt this working
         this.scene.background = new T.CubeTextureLoader()
         .load( [
             './Pictures/stars2.png',
@@ -115,17 +116,19 @@ export class SceneControl {
             this.scene.add(this.objects[i]);
         }
 
-        this.def2 = new T.Mesh(defGeo, defMat); // the following defender
-        this.def2.position.x = -15;
-        this.def2.position.z = -15;
-        this.def2.position.y = .5;
-        this.scene.add(this.def2);
+        this.def_wrapper = new defender(this.scene);
 
-        this.def3 = new T.Mesh(defGeo, defMat); // another following defender
-        this.def3.position.x = 15;
-        this.def3.position.z = 15;
-        this.def3.position.y = .5;
-        this.scene.add(this.def3);
+        // this.def2 = new T.Mesh(defGeo, defMat); // the following defender
+        // this.def2.position.x = -15;
+        // this.def2.position.z = -15;
+        // this.def2.position.y = .5;
+        // this.scene.add(this.def2);
+
+        // this.def3 = new T.Mesh(defGeo, defMat); // another following defender
+        // this.def3.position.x = 15;
+        // this.def3.position.z = 15;
+        // this.def3.position.y = .5;
+        // this.scene.add(this.def3);
 
         
         this.def1Right = true;
@@ -154,6 +157,9 @@ export class SceneControl {
             this.objects[i].position.y = .1 * (Math.cos(this.frames[i]) + 10);
             this.frames[i] += .1;
         }
+
+        this.def_wrapper.update(cube, this.worldSize);
+
         if (this.def1Right == true) {
             this.def1.position.x -= 0.1;
             this.def1.position.z += 0.1;
@@ -167,38 +173,50 @@ export class SceneControl {
         }
         if (!this.def1Right && this.def1.position.z <= 1) {
             this.def1Right = true;
-        } 
-        if (Math.abs(cube.position.x - this.def1.position.x) < 0.75 &&
-        Math.abs(cube.position.z - this.def1.position.z) < 0.75) {
-            this.scene.remove(cube);
-            return 1;
         }
-        if (Math.abs(cube.position.x - this.def2.position.x) < 0.75 &&
-        Math.abs(cube.position.z - this.def2.position.z) < 0.75) {
-            this.scene.remove(cube);
-            return 1;
+
+        //check all defender locations with player's location
+        for (let i = 0; i < this.def_wrapper.defenders.length; i++) {
+            if (Math.abs(cube.position.x - this.def_wrapper.defenders[i].position.x) < 0.75 &&
+                Math.abs(cube.position.z - this.def_wrapper.defenders[i].position.z) < 0.75) {
+                this.scene.remove(cube);
+                return 1;
+            }
         }
+
+
+        // if (Math.abs(cube.position.x - this.def2.position.x) < 0.75 &&
+        // Math.abs(cube.position.z - this.def2.position.z) < 0.75) {
+        //     this.scene.remove(cube);
+        //     return 1;
+        // }
+
+        // if (Math.abs(cube.position.x - this.def3.position.x) < 0.75 &&
+        // Math.abs(cube.position.z - this.def3.position.z) < 0.75) {
+        //     this.scene.remove(cube);
+        //     return 1;
+        // }
 
         //move following defender
-        let x = (cube.position.x - this.def2.position.x);
-        let z = (cube.position.z - this.def2.position.z);
-        let dist = Math.sqrt(Math.pow(x,2) + Math.pow(z,2));
-        x = x / dist;
-        z = z / dist;
-        let step = 0.05;
-        this.def2.position.x += step*x;
-        this.def2.position.z += step*z;
+        // let x = (cube.position.x - this.def2.position.x);
+        // let z = (cube.position.z - this.def2.position.z);
+        // let dist = Math.sqrt(Math.pow(x,2) + Math.pow(z,2));
+        // x = x / dist;
+        // z = z / dist;
+        // let step = 0.05;
+        // this.def2.position.x += step*x;
+        // this.def2.position.z += step*z;
 
-        // move second follower
+        // // // move second follower
 
-        x = (cube.position.x - this.def3.position.x);
-        z = (cube.position.z - this.def3.position.z);
-        dist = Math.sqrt(Math.pow(x,2) + Math.pow(z,2));
-        x = x / dist;
-        z = z / dist;
-        //let step = 0.05;
-        this.def3.position.x += step*x;
-        this.def3.position.z += step*z;
+        // x = (cube.position.x - this.def3.position.x);
+        // z = (cube.position.z - this.def3.position.z);
+        // dist = Math.sqrt(Math.pow(x,2) + Math.pow(z,2));
+        // x = x / dist;
+        // z = z / dist;
+        // //let step = 0.05;
+        // this.def3.position.x += step*x;
+        // this.def3.position.z += step*z;
         
         // add a new object
         if (this.frame % 300 == 0){
@@ -206,8 +224,8 @@ export class SceneControl {
             let geo = new T.SphereBufferGeometry(.5, 30, 30);
             let mat = new T.MeshStandardMaterial({color: "blue"});
             // random coordinates for the object
-            let x = Math.floor(Math.random() * 2*this.worldSize) - this.worldSize;
-            let z = Math.floor(Math.random() * 2*this.worldSize) - this.worldSize;
+            let x = Math.floor(Math.random() * 2*(this.worldSize - 1)) - (this.worldSize - 1);
+            let z = Math.floor(Math.random() * 2*(this.worldSize - 1)) - (this.worldSize - 1);
             let obj = new T.Mesh(geo, mat);
             obj.position.x = x;
             obj.position.y = 1;
@@ -246,6 +264,17 @@ export class SceneControl {
             if (this.shootDirect.localeCompare("down")) { this.bullet.position.z -= 1; }
             if (this.shootDirect.localeCompare("left")) { this.bullet.position.x += 1; }
             if (this.shootDirect.localeCompare("right")) { this.bullet.position.x -= 1; }
+
+            // if a defender has been hit
+            for (let i = 0; i < this.def_wrapper.defenders.length; i++) {
+                if (Math.abs(this.bullet.position.x - this.def_wrapper.defenders[i].position.x) < 0.75 &&
+                Math.abs(this.bullet.position.z - this.def_wrapper.defenders[i].position.z) < 0.75) {
+                    this.scene.remove(this.def_wrapper.defenders[i]);
+                    this.def_wrapper.defenders.splice(i, 1);
+                }
+            }
+
+            // if the bullet is outside the arena
             if (Math.abs(this.bullet.position.x) > this.worldSize || Math.abs(this.bullet.position.z) > this.worldSize) {
                 this.shooting = false;
                 this.scene.remove(this.bullet);
