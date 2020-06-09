@@ -9,6 +9,7 @@ export class SceneControl {
     constructor(scene) {
         this.scene = scene;
         this.frame = 1;
+        this.bgframe = 0;
         this.scene.background = new T.CubeTextureLoader()
         .load( [
             './Pictures/stars2.png',
@@ -129,12 +130,13 @@ export class SceneControl {
         // this.def3.position.z = 15;
         // this.def3.position.y = .5;
         // this.scene.add(this.def3);
-
         
         this.def1Right = true;
 
         this.shooting = false; // whether or not there's a bullet flying through the screen rn
         this.shootDirect = "";
+
+        this.score = 0;
         
     }
 
@@ -149,6 +151,9 @@ export class SceneControl {
                     this.scene.remove(this.objects[i]);
                     this.objects.splice(i,1);
                     this.frames.splice(i, 1);
+                    this.score++;
+                    let text = "score: " + this.score.toString(10);
+                    document.getElementById("score").innerHTML = text;
             }
         }
 
@@ -219,7 +224,7 @@ export class SceneControl {
         // this.def3.position.z += step*z;
         
         // add a new object
-        if (this.frame % 300 == 0){
+        if (this.frame % 300 == 0 && this.objects.length <= 10){
             // add a new object every 100 frames
             let geo = new T.SphereBufferGeometry(.5, 30, 30);
             let mat = new T.MeshStandardMaterial({color: "blue"});
@@ -283,10 +288,6 @@ export class SceneControl {
 
         if (this.objects.length == 0) { return 2; }
         else { return 0; }
-
-
-
-
     }
 
     updateSurroundings() {
@@ -297,6 +298,10 @@ export class SceneControl {
         this.moon.translateX(-140);
         this.moon.rotateOnWorldAxis(new T.Vector3(0,1,0), .007);
         this.moon.translateX(140);
+
+        //update the spaceship "floating"
+        this.def_wrapper.group.position.y = (.25)*Math.cos(this.bgframe);
+        this.bgframe += .1;
 
     }
 }
