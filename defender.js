@@ -53,7 +53,7 @@ export class defender {
             if (dist < 20) {
                 x = x / dist;
                 z = z / dist;
-                let step = 0.07
+                let step = 0.08;
                 this.defenders[i].position.x += step*x;
                 this.defenders[i].position.z += step*z;
             }
@@ -177,7 +177,7 @@ export class defender {
         console.log(this.new_def.position.y);
         this.scene.add(this.new_def);
         this.dropoff_flag = true;
-        this.shipDropoff();
+        //this.shipDropoff();
 
     }
     shipDropoff() {
