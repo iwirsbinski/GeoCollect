@@ -34,7 +34,7 @@ function play(scene, camera, renderer, control) {
     let down = false;
     let shoot = false;
 
-    let recentMove = "";
+    let recentMove = "left";
     //  let renderer = new T.WebGLRenderer();
     // renderer.setSize( 700,700 ); // was (window.innerWidth, window.innerHeight );
     // document.getElementById("three2").appendChild( renderer.domElement );
