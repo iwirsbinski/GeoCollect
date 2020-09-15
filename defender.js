@@ -167,7 +167,9 @@ export class defender {
         console.log("new def!!")
         let defGeo = new T.ConeBufferGeometry(1,1,50);
         let defMat = new T.MeshStandardMaterial({color: "yellow"});
-
+        if (!(Math.abs(this.group.position.x - this.newLocX) < 0.2 && Math.abs(this.group.position.z - this.newLocZ) < 0.2)) {
+            defMat = new T.MeshStandardMaterial({color: "blue"});
+        }
         this.new_def = new T.Mesh(defGeo, defMat); // the following defender
         let x = this.newLocX;
         let z = this.newLocZ;

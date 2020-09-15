@@ -132,23 +132,25 @@ function play(scene, camera, renderer, control) {
 
         let step = 0.08;
 
-        if (up && cube.position.z > -(control.worldSize - .5)) {
-            cube.position.z -= step;
-            camera.position.z -= step;
-            console.log("yeet\n");
-        }
-        if (down && cube.position.z < control.worldSize - .5) {
-            cube.position.z += step;
-            camera.position.z += step;
-        }
-        if (left && cube.position.x > -(control.worldSize - .5)) { 
-            cube.position.x -= step;
-            camera.position.x -= step;
-        }
-        if (right && cube.position.x < control.worldSize - .5) {
-            cube.position.x += step;
-            camera.position.x += step;
-        }
+        if (!control.abducted) {
+            if (up && cube.position.z > -(control.worldSize - .5)) {
+                cube.position.z -= step;
+                camera.position.z -= step;
+                //console.log("yeet\n");
+            }
+            if (down && cube.position.z < control.worldSize - .5) {
+                cube.position.z += step;
+                camera.position.z += step;
+            }
+            if (left && cube.position.x > -(control.worldSize - .5)) { 
+                cube.position.x -= step;
+                camera.position.x -= step;
+            }
+            if (right && cube.position.x < control.worldSize - .5) {
+                cube.position.x += step;
+                camera.position.x += step;
+            }
+    }
 
 
         let state = control.update(cube, shoot, recentMove);
@@ -170,7 +172,7 @@ function play(scene, camera, renderer, control) {
         
     }
 
-    animate();
+    if (gameLoop) { animate(); }
 }
 
 function welcome() {
@@ -287,14 +289,15 @@ function lose(scene, camera, renderer, control) {
         // level 1
         if (code == 49) {
             // remove listener, clear scene
-            document.removeEventListener("keypress", keyPress);
-            while(scene.children.length > 0){ 
-                scene.remove(scene.children[0]); 
-            }
-            let control = new SceneControl(scene);
-            gameLoop = true;
-            loseLoop = false;
-            play(scene, camera, renderer, control);
+            // document.removeEventListener("keypress", keyPress);
+            // while(scene.children.length > 0){ 
+            //     scene.remove(scene.children[0]); 
+            // }
+            // let control = new SceneControl(scene);
+            // gameLoop = true;
+            // loseLoop = false;
+            // play(scene, camera, renderer, control);
+            location.reload();
         }
         if (code == 50) {
             // clear welcome screen, remove listener

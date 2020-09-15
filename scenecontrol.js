@@ -2,11 +2,13 @@ import { defender } from "./defender.js";
 
 let T = THREE;
 let frame = 1;
+let abducted = false;
 
 export class SceneControl {
 
     // construct the objects of the scene.
     constructor(scene) {
+        this.abducted = false;
         this.scene = scene;
         this.frame = 1;
         this.bgframe = 0;
@@ -145,6 +147,12 @@ export class SceneControl {
     // returns 0 if game is continued, 1 if game is lost, 2 if game is won.
     update(cube, shoot, recentMove) {
         this.updateSurroundings();
+        // if player has been abducted, begin animation
+        if (this.abducted) {
+            let done = this.abduct(cube);
+            if (done == 1) { return 1; }
+            else { return 0; }
+        }
         for (let i = 0; i < this.objects.length; i++) {
             if ((Math.abs(cube.position.x - this.objects[i].position.x) < 0.3) &&
                 (Math.abs(cube.position.z - this.objects[i].position.z) < 0.3)) {
@@ -188,6 +196,15 @@ export class SceneControl {
                 return 1;
             }
         }
+
+        // check ship location with player's location
+        if (Math.abs(cube.position.x - this.def_wrapper.group.position.x) < 2 &&
+        Math.abs(cube.position.z - this.def_wrapper.group.position.z) < 2) {
+            //this.scene.remove(cube); //TODO: begin animation
+            this.abducted = true;
+            return 0;
+        }
+
 
 
         // if (Math.abs(cube.position.x - this.def2.position.x) < 0.75 &&
@@ -303,5 +320,34 @@ export class SceneControl {
         this.def_wrapper.group.position.y = (.25)*Math.cos(this.bgframe);
         this.bgframe += .1;
 
+    }
+
+    abduct(cube) {
+        // let x = (cube.position.x - this.def_wrapper.group.position.x);
+        // let z = (cube.position.z - this.def_wrapper.group.position.z);
+        // let y = (cube.position.y - this.def_wrapper.mesh.position.y);
+        // let dist = Math.sqrt(Math.pow(x,2) + Math.pow(z,2) + Math.pow(y, 2));
+        // x = x / dist;
+        // z = z / dist;
+        // y = y / dist;
+        // let step = 0.05;
+        // cube.position.x += step*x;
+        // cube.position.z += step*z;
+        // cube.position.y -= step*y
+        // console.log(this.def_wrapper.mesh.position.y);
+        // console.log(cube.position.y);
+        cube.position.x = this.def_wrapper.group.position.x;
+        cube.position.z = this.def_wrapper.group.position.z;
+
+        cube.position.y += 0.3;
+
+
+        // cube has reached the ship
+        if (10 < cube.position.y) {
+            this.abducted = false;
+            return 1;
+        }
+
+        return 0;
     }
 }
