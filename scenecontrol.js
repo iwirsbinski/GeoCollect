@@ -154,8 +154,8 @@ export class SceneControl {
             else { return 0; }
         }
         for (let i = 0; i < this.objects.length; i++) {
-            if ((Math.abs(cube.position.x - this.objects[i].position.x) < 0.45) &&
-                (Math.abs(cube.position.z - this.objects[i].position.z) < 0.45)) {
+            if ((Math.abs(cube.position.x - this.objects[i].position.x) < 0.5) &&
+                (Math.abs(cube.position.z - this.objects[i].position.z) < 0.5)) {
                     this.scene.remove(this.objects[i]);
                     this.objects.splice(i,1);
                     this.frames.splice(i, 1);
