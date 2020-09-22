@@ -53,7 +53,7 @@ export class defender {
             if (dist < 20) {
                 x = x / dist;
                 z = z / dist;
-                let step = 0.08;
+                let step = 0.065;
                 this.defenders[i].position.x += step*x;
                 this.defenders[i].position.z += step*z;
             }
